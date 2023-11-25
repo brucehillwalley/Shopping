@@ -16,6 +16,14 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <style>
+      .line-clamp-2{
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      } 
+    </style>
     <title>Shopping</title>
   </head>
   <body>
@@ -141,7 +149,6 @@
         class="d-flex justify-content-center flex-wrap gap-3"
         id="btns"
       >
-      <button class="btn btn-warning">Butonlar buraya</button>
     </section>
       <!--? ----------------------------------------------------------------------- -->
       <!--?                              search input                               -->
@@ -163,7 +170,7 @@
       <!--!                             category title                              -->
       <!--! ----------------------------------------------------------------------- -->
       <h4 class="text-center mt-2">
-        Category: <span class="text-danger" id="category">Seçilen Kategori Bilgisi</span>
+        Category: <span class="text-danger" id="category">ALL</span>
       </h4>
       <!--+ ----------------------------------------------------------------------- -->
       <!--+                                products                                 -->
