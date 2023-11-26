@@ -15,7 +15,7 @@ const btnColors = [
 ];
 
 let products = [];
-let baskets = []
+let baskets = [];
 
 const getProducts = async () => {
   const res = await fetch("https://anthonyfs.pythonanywhere.com/api/products/");
@@ -23,7 +23,7 @@ const getProducts = async () => {
   // console.log(data);
   products = data;
   category();
-  displayProducts(products)
+  displayProducts(products);
 };
 
 getProducts();
@@ -71,13 +71,13 @@ const category = () => {
 };
 
 function displayProducts(arr) {
-    productDivs.innerHTML = "";
-    arr.forEach((item) => {
-      const { id, title, description, price, image } = item;
-      const productDiv = document.createElement("div");
-      productDiv.classList.add("col");
-      productDiv.setAttribute("id", id);
-      productDiv.innerHTML = `
+  productDivs.innerHTML = "";
+  arr.forEach((item) => {
+    const { id, title, description, price, image } = item;
+    const productDiv = document.createElement("div");
+    productDiv.classList.add("col");
+    productDiv.setAttribute("id", id);
+    productDiv.innerHTML = `
           <div class="card">
               <img src="${image}" class="p-2" height="250px" alt="...">
               <div class="card-body">
@@ -98,14 +98,14 @@ function displayProducts(arr) {
               </div>
             </div>
           `;
-         productDiv.addEventListener("click", (e)=>{
-            if (e.target.classList.contains("btn-danger")){
-                addToCard(item)
-            }
-         })
-          productDivs.appendChild(productDiv)
+    productDiv.addEventListener("click", (e) => {
+      if (e.target.classList.contains("btn-danger")) {
+        addToCard(item);
+      }
     });
-  }
+    productDivs.appendChild(productDiv);
+  });
+}
 
 // category: "Electronics";
 // category_id: 1;
@@ -116,24 +116,69 @@ function displayProducts(arr) {
 // quantity: 1;
 // title: "Macbook Air M2";
 
-function addToCard(product){
-    console.log(product);
-    if (!baskets.every((e) => e.title !== product.title)) {
-        baskets= baskets.map(item=>{
-          return  item.id===product.id ? {...item,quantity:item.quantity+1}: item
-          //! bu yapı modifiye işlemi için çok kullanılır.
-        })
-    } else {
-        baskets.push(product)
-    }
-    console.log(baskets);
+function addToCard(product) {
+  console.log(product);
+  if (!baskets.every((e) => e.title !== product.title)) {
+    baskets = baskets.map((item) => {
+      return item.id === product.id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item;
+      //! bu yapı modifiye işlemi için çok kullanılır.
+    });
+  } else {
+    baskets.push(product);
+  }
+  console.log(baskets);
 }
 
-btnDivs.addEventListener("click", (e)=>{
-    if (e.target.classList.contains("btn")) {
-        const selectedCategory = e.target.innerText.toLowerCase()
-        categoryTitle.innerText=selectedCategory.toUpperCase()
-        const filteredProducts= selectedCategory=="all" ? products : products.filter(item=>item.category.toLowerCase()===selectedCategory)
-        displayProducts(filteredProducts)
-    }
-})
+btnDivs.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn")) {
+    const selectedCategory = e.target.innerText.toLowerCase();
+    categoryTitle.innerText = selectedCategory.toUpperCase();
+    const value = searchInput.value;
+    const filteredProducts = filtered(selectedCategory, value);
+    displayProducts(filteredProducts);
+  }
+});
+
+searchInput.addEventListener("input", (e) => {
+  const value = e.target.value.toLowerCase();
+  const selectedCategory = categoryTitle.innerText.toLocaleUpperCase();
+  const filteredProducts = filtered(selectedCategory, value);
+  displayProducts(filteredProducts)
+});
+
+function filtered(selectedCategory, value) {
+  const newArr =
+    selectedCategory == "all"
+      ? products
+      : products.filter(
+          (item) =>
+            item.category.toLowerCase() === selectedCategory &&
+            item.title.toLowerCase().includes(value.toLowerCase())
+        );
+  return newArr;
+}
+
+
+function showModal(product){
+    fetch(`https://anthonyfs.pythonanywhere.com/api/products/${product.id}`)
+    .then((res) => res.json())
+    .then((res) => {
+      modalBody.innerHTML = `<div class="text-center">
+            <img src="${res.image}" class="p-2" height="250px" alt="...">
+            <h5 class="card-title">${res.title}</h5>
+            <p class="card-text">${res.description}</p>
+            <p class="card-text">Fiyat: ${res.price} $</p>
+            </div>
+            `;
+    });
+  // const {image,title,description,price} = product
+  // modalBody.innerHTML = `<div class="text-center">
+  // <img src="${image}" class="p-2" height="250px" alt="...">
+  // <h5 class="card-title">${title}</h5>
+  // <p class="card-text">${description}</p>
+  // <p class="card-text">Fiyat: ${price} $</p>
+  // </div>
+  // `;
+}
